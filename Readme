@@ -1,98 +1,72 @@
-# **Static Routing using SDN Controller (Mininet + Ryu)**
+# 🚀 Static Routing using SDN Controller (Mininet + Ryu)
+
+## 📌 Overview
+
+This project demonstrates **static routing in Software Defined Networking (SDN)** using Mininet and Ryu Controller. It implements manual OpenFlow rules to establish fixed packet forwarding paths and validates network performance through connectivity, flow table, and throughput testing.
 
 ---
 
-## **1. Introduction**
-
-Software Defined Networking (SDN) is a modern networking paradigm that separates the control plane from the data plane. This allows centralized control of the network through a controller. In this project, we implement **static routing** using an SDN controller where flow rules are manually installed to define fixed paths for packet forwarding.
-
----
-
-## **2. Objective**
-
-* To implement static routing using SDN
-* To demonstrate controller-switch interaction
-* To install manual flow rules (match–action)
-* To validate packet delivery between hosts
-* To perform regression testing to ensure consistency
-
----
-
-## **3. Tools & Technologies Used**
+## 🛠 Tech Stack
 
 * **Mininet** – Network simulation
 * **Ryu Controller** – SDN controller
-* **OpenFlow Protocol (v1.3)** – Communication between controller and switches
-* **Ubuntu/Linux Terminal**
+* **OpenFlow v1.3** – Controller-switch communication
+* **Linux / Ubuntu Terminal**
 
 ---
 
-## **4. Network Topology**
+## 📸 Screenshots
 
-The topology used in this project is:
+### 🔹 Connectivity Test (Ping)
 
+![Ping](screenshots/connectivity-test1.png)
+![Ping](screenshots/connectivity-test2.png)
+
+### 🔹 Flow Table Verification
+
+![Flow](screenshots/flow-table.png)
+
+### 🔹 Throughput Test (iperf)
+
+![Throughput](screenshots/throughput-test.png)
+
+### 🔹 Regression Testing
+
+![Regression](screenshots/regression-testing1.png)
+![Regression](screenshots/regression-testing2.png)
+
+---
+
+## 🌐 Network Topology
+
+```
 h1 ─── s1 ─── s2 ─── h2
+```
 
-* h1, h2 → Hosts
-* s1, s2 → OpenFlow switches
-
----
-
-## **5. Methodology**
-
-### **5.1 Topology Creation**
-
-A custom topology is created using Mininet with two hosts and two switches connected linearly.
-
-### **5.2 Controller Implementation**
-
-A Ryu controller application is developed to:
-
-* Detect switch connections
-* Install static flow rules
-* Handle packet-in events (logging)
-
-### **5.3 Flow Rule Installation**
-
-Static flow rules are installed as follows:
-
-#### Switch s1:
-
-* in_port 1 → out_port 2
-* in_port 2 → out_port 1
-
-#### Switch s2:
-
-* in_port 1 → out_port 2
-* in_port 2 → out_port 1
-
-These rules ensure packets follow a fixed path from h1 to h2 and vice versa.
+* **h1, h2** → Hosts
+* **s1, s2** → OpenFlow switches
 
 ---
 
-## **6. Routing Behavior**
+## 🎯 Objectives
 
-When a packet is sent from h1:
-
-1. It reaches switch s1 through port 1
-2. s1 forwards it to port 2 (towards s2)
-3. s2 receives it on port 1
-4. s2 forwards it to port 2 (towards h2)
-
-Thus, a **static routing path** is established:
-h1 → s1 → s2 → h2
+* Implement static routing using SDN
+* Demonstrate controller-switch interaction
+* Install manual flow rules (match–action)
+* Validate packet delivery between hosts
+* Perform regression testing for consistency
 
 ---
 
-## **7. Implementation Steps**
+## ⚙️ Implementation
 
-### Step 1: Start Controller
+### 1️⃣ Start Ryu Controller
 
 ```bash
 ryu-manager controller.py
 ```
 
-### Step 2: Start Mininet
+### 2️⃣ Start Mininet Topology
 
 ```bash
 sudo mn --custom topo.py --topo staticroutingtopo --controller remote
@@ -100,85 +74,92 @@ sudo mn --custom topo.py --topo staticroutingtopo --controller remote
 
 ---
 
-## **8. Testing and Results**
+## 🔄 Routing Logic
 
-### **8.1 Ping Test**
+### Switch s1:
+
+* `in_port 1 → out_port 2`
+* `in_port 2 → out_port 1`
+
+### Switch s2:
+
+* `in_port 1 → out_port 2`
+* `in_port 2 → out_port 1`
+
+📌 **Path Established:**
+`h1 → s1 → s2 → h2`
+
+---
+
+## 🧪 Testing & Results
+
+### ✅ Ping Test
 
 ```bash
 mininet> pingall
 ```
 
-Result: Successful communication between hosts.
+✔️ Successful communication between hosts
 
 ---
 
-### **8.2 Flow Table Verification**
+### ✅ Flow Table Verification
 
 ```bash
 sudo ovs-ofctl dump-flows s1
 sudo ovs-ofctl dump-flows s2
 ```
 
-Result: Static flow rules are correctly installed.
+✔️ Flow rules installed correctly
 
 ---
 
-### **8.3 Throughput Test**
+### ✅ Throughput Test
 
 ```bash
-mininet>h2 iperf -s &
-        h1 iperf -c 10.0.0.2 -t 5
+mininet> h2 iperf -s &
+mininet> h1 iperf -c 10.0.0.2 -t 5
 ```
 
-Result: Successful data transfer with measurable throughput.
+✔️ Successful data transfer with measurable throughput
 
 ---
 
-## **9. Regression Testing**
+## 🔁 Regression Testing
 
-To verify consistency:
+* Restart network and controller
+* Reinstall flow rules
+* Perform ping test
 
-1. Network is stopped and restarted
-2. Controller is relaunched
-3. Flow rules are reinstalled automatically
-4. Ping test is performed again
-
-Result:
-
-* Routing path remains unchanged
-* Communication remains successful
-
-This confirms **stable static routing behavior**.
+✔️ Routing remains consistent and stable
 
 ---
 
-## **10. Advantages of Static Routing in SDN**
+## ✅ Advantages
 
-* Predictable and deterministic behavior
-* Easy to implement
-* Centralized control via controller
-* Useful for controlled environments
+* Predictable and deterministic routing
+* Simple to implement
+* Centralized control
+* Ideal for controlled environments
 
 ---
 
-## **11. Limitations**
+## ⚠️ Limitations
 
 * Not scalable for large networks
-* No dynamic adaptation to failures
+* No dynamic failure handling
 * Requires manual configuration
 
 ---
 
-## **12. Conclusion**
-
-In this project, static routing was successfully implemented using an SDN controller. The controller installed predefined flow rules that ensured packets followed a fixed path across the network. Testing and regression validation confirmed that the routing behavior is consistent and reliable.
-
----
-
-## **13. References**
+## 📚 References
 
 * Mininet Documentation
-* Ryu SDN Framework Documentation
+* Ryu SDN Framework
 * OpenFlow Specification v1.3
 
 ---
+
+## 👨‍💻 Author
+
+**Heemadhawala R**
